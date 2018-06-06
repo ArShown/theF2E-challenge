@@ -12,7 +12,7 @@ const ROUTE_BASE = '/';
 const INCLUDE_ASSETS = 'css';
 
 /* 要打包config.js的資料夾，使用逗號區隔 */
-const BUILD_DIRECTORIES = 'containers';
+const BUILD_DIRECTORIES = 'containers,storage';
 
 /* 是否啟用 redux-devtools */
 const ENABLE_DEV_TOOLS = false;
