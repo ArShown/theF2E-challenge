@@ -1,0 +1,23 @@
+@import "./app/assets/mixin/color.scss";
+@import "./app/assets/mixin/media.scss";
+
+.header {
+  background-color: $blue;
+}
+
+.container {
+  margin: 0 auto;
+  width: 90%;
+  @media ($media-sm-up) {
+    & {
+      width: 85%;
+    }
+  }
+
+  @media ($media-md-up) {
+    & {
+      width: 70%;
+    }
+  }
+
+}
