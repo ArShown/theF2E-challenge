@@ -1,4 +1,5 @@
 @import "../mixin/color";
+@import "../mixin/media";
 
 html, body {
   position: relative;
@@ -7,7 +8,21 @@ html, body {
   margin: 0;
   padding: 0;
   background-color: $lighten-1-gray;
+  font-size: 24px;
 }
+
+@media ($media-md-down) {
+  html {
+    font-size: 20px;
+  }
+}
+
+@media ($media-sm-down) {
+  html {
+    font-size: 16px;
+  }
+}
+
 
 .title {
   font-family: 'Roboto-Medium';
