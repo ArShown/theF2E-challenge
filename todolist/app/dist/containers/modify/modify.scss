@@ -1,0 +1,75 @@
+@import "./app/assets/mixin/color.scss";
+@import "../add/add.scss";
+
+.edit-frame {
+  @extend .add-frame;
+}
+
+.trigger {
+  @extend .trigger;
+  color: #000;
+  border-width: 0;
+  background-color: $lighten-0-gray;
+  border-radius: 5px 5px 0 0;
+  .modify-mode & {
+    border-bottom: 2px solid $gray;
+  }
+}
+
+.trigger-checkbox {
+  @extend .trigger-checkbox;
+  cursor: pointer;
+}
+
+.trigger-icon {
+  @extend .trigger-icon;
+  display: block;
+  cursor: pointer;
+}
+
+.btn {
+  @extend .btn;
+  &.modify {
+    background-color: $blue;
+    color: #FFF;
+    &[disabled] {
+      background-color: $gray;
+    }
+  }
+}
+
+.modify-mode {
+  box-shadow: 0 4px 4px 0 $gray;
+  height: auto;
+  .trigger-icon {
+    display: block;
+  }
+  .add-input {
+    z-index: 1;
+    opacity: 1;
+  }
+  .trigger-msg {
+    display: none;
+  }
+  .trigger-icon.edit {
+    color: $blue;
+  }
+  .create-form {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.edit-frame {
+  &[data-important=true] {
+    .trigger {
+      background-color: $cream;
+    }
+  }
+  &[data-completed=true] {
+    .trigger-msg {
+      text-decoration: line-through;
+      color: #9B9B9B;
+    }
+  }
+}
