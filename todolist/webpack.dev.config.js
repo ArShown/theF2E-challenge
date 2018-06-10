@@ -35,7 +35,7 @@ module.exports = Object.assign(baseConfig, {
             options: {
               modules: true,
               importLoaders: 1,
-              localIdentName: '[path][name]/[local]/[hash:base64:5]',
+              localIdentName: '[local]-[hash:base64:5]',
               autoprefixer: true
             }
           },
