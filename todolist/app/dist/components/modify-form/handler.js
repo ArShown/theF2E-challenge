@@ -18,6 +18,9 @@ export default compose(
         date,
         time: e.target.value
       });
+    },
+    changeFile: ({ setField }) => (e) => {
+      setField('file', e.target.files[0].name);
     }
   }),
   withStyle(modifyForm)

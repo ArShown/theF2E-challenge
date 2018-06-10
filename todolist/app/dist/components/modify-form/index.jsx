@@ -4,15 +4,17 @@ import handler from './handler';
 export default handler(
   ({
     onChangeHandler,
-    data: { deadline: { date, time }, comment},
-    changeDate, changeTime
+    data: { deadline: { date, time }, file, comment },
+    changeDate,
+    changeTime,
+    changeFile
   }) =>
     <div styleName="modify-form">
       <div styleName="modify-form-row">
         <div styleName="subtitle">
-          <i styleName="fa fa-calendar" /> Deadline
+          <i styleName="fa fa-calendar"/> Deadline
         </div>
-        <div>
+        <div styleName="modify-form-control">
           <input
             styleName="text-field"
             type="text"
@@ -31,15 +33,25 @@ export default handler(
       </div>
       <div styleName="modify-form-row">
         <div styleName="subtitle">
-          <i styleName="fa fa-file-o" /> File
+          <i styleName="fa fa-file-o"/> File
         </div>
-        <div />
+        <div styleName="modify-form-control file-control">
+          <span styleName="paragraph">
+            {file}
+          </span>
+          <label styleName={file ? 'has-file' : ''}>
+            <div styleName="file-uploader">
+              <i styleName="fa fa-plus"/>
+            </div>
+            <input type="file" onChange={changeFile}/>
+          </label>
+        </div>
       </div>
       <div styleName="modify-form-row">
         <div styleName="subtitle">
-          <i styleName="fa fa-commenting-o" /> Comment
+          <i styleName="fa fa-commenting-o"/> Comment
         </div>
-        <div>
+        <div styleName="modify-form-control">
           <textarea
             styleName="multi-text-field"
             onChange={onChangeHandler('comment')}
