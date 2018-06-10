@@ -53,29 +53,13 @@ module.exports = Object.assign(baseConfig, {
           chunks: 'initial',
           name: 'vendors',
           test: m => /node_modules/.test(m.context)
-        },
-        publicStyles: {
-          name: 'public',
-          test: m =>
-            m.constructor.name === 'CssModule' &&
-            /(app\/asset\/)/.test(m.context),
-          chunks: 'all',
-          enforce: true
-        },
-        appStyles: {
-          name: 'app',
-          test: m =>
-            m.constructor.name === 'CssModule' &&
-            /(app\/dist\/)/.test(m.context),
-          chunks: 'all',
-          enforce: true
         }
       }
     }
   },
   plugins: baseConfig.plugins.concat([
     new MiniCssExtractPlugin({
-      filename: 'css/[name].css'
+      filename: 'css/app.css'
     }),
     new OptimizeCSSAssetsPlugin(),
     new webpack.DefinePlugin({
