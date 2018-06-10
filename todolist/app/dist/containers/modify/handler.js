@@ -52,7 +52,7 @@ export default compose(
       deadline
     }) => {
       const submitStream = concat(
-        of(dispatch(
+        of(() => dispatch(
           emit(TASK_UPDATE, {
             id,
             completed,
@@ -63,12 +63,12 @@ export default compose(
             deadline
           })
         )),
-        of(updateOneField('modifyMode', false))
+        of(() => updateOneField('modifyMode', false))
       );
 
       return () => {
         if (content.trim() !== '')
-          submitStream.subscribe();
+          submitStream.subscribe(stream => stream());
         return false;
       };
     }

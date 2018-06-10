@@ -62,13 +62,13 @@ export default compose(
       },
       triggerHandler: ({ modifyMode, updateOneField }) => {
         const triggerStream = concat(
-          of(updateOneField('modifyMode', true)),
-          of(_inputEl.focus())
+          of(() => updateOneField('modifyMode', true)),
+          of(() => _inputEl.focus())
         );
 
         return () => {
           if (modifyMode) return false;
-          triggerStream.subscribe();
+          triggerStream.subscribe(stream => stream());
         };
       },
       cancel: () => () => {
@@ -83,7 +83,7 @@ export default compose(
         deadline
       }) => {
         const submitStream = concat(
-          of(dispatch(
+          of(() => dispatch(
             emit(TASK_INSERT, {
               completed,
               important,
@@ -93,12 +93,12 @@ export default compose(
               deadline
             })
           )),
-          of(updateAllField(defaultFields))
+          of(() => updateAllField(defaultFields))
         );
 
         return () => {
           if (content.trim() !== '')
-            submitStream.subscribe();
+            submitStream.subscribe(stream => stream());
           return false;
         };
       }

@@ -11,7 +11,7 @@ export const TASK_DELETE = 'TASK_DELETE';
 
 /* store */
 const defaultStore = {
-  increment: 0,
+  increment: 2,
   data: [
     merge(new Task(), {
       content: '吃飯',
@@ -34,7 +34,7 @@ const defaultStore = {
 const reducer = reducerCreator(defaultStore, {
   [TASK_INSERT]: (preStore, payload) => evolve({
     increment: add(1),
-    data: append(merge(new Task(), { order: preStore.increment + 1 }, payload))
+    data: append(merge(new Task(), { order: preStore.increment + 1, ...payload }))
   }, preStore),
 
   [TASK_UPDATE]: (preStore, payload) => {

@@ -10,7 +10,8 @@ export default handler(({ onChangeHandler, data: { deadline,comment } }) =>
       <div>
         <input
           styleName="text-field"
-          type="date"
+          type="text"
+          placeholder="yyyy/mm/dd"
           onChange={onChangeHandler('deadline')}
           value={deadline}
         />{' '}
