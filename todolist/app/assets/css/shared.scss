@@ -9,6 +9,7 @@ html, body {
   padding: 0;
   background-color: $lighten-1-gray;
   font-size: 24px;
+  font-family: 微軟正黑體, Roboto-Medium;
 }
 
 @media ($media-md-down) {
@@ -23,39 +24,59 @@ html, body {
   }
 }
 
+* {
+  box-sizing: border-box;
+}
+
+.container {
+  margin: 0 auto;
+  width: 90%;
+  @media ($media-sm-up) {
+    & {
+      width: 85%;
+    }
+  }
+
+  @media ($media-md-up) {
+    & {
+      width: 70%;
+    }
+  }
+}
+
 
 .title {
-  font-family: 'Roboto-Medium';
   color: black;
-  font-size: 24px;
+  font-size: 1rem;
 }
 
 .subtitle {
-  font-family: 'Roboto Medium';
   color: black;
-  font-size: 20px;
+  font-size: 0.8rem;
 }
 
 .paragraph {
-  font-family: 'Roboto-Regular';
   color: black;
-  font-size: 16px;
+  font-size: 0.6rem;
 }
 
 .remark {
-  font-family: 'Roboto-Regular';
-  font-size: 16px;
+  font-size: 0.6rem;
   color: $dark-gray;
 }
 
 .placeholder {
-  font-family: 'Roboto-Regular';
-  font-size: 16px;
+  font-size: 0.6rem;
   color: $dark-gray;
 }
 
 .status {
-  font-family: 'Roboto Italic';
-  font-size: 24px;
+  font-size: 1rem;
   color: $gray;
+  font-style: italic;
+  padding: 0 20px;
+}
+
+.hidden {
+  display: none;
 }
