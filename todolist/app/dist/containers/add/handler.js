@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 /* type */
 import { TASK_INSERT } from '~/storage/reducer';
 
@@ -22,7 +24,10 @@ const defaultFields = {
   content: '',
   file: null,
   comment: '',
-  deadline: ''
+  deadline: {
+    date: '',
+    time: ''
+  }
 };
 
 export const modifyManager = withStateHandlers(defaultFields, {
@@ -80,7 +85,10 @@ export default compose(
         content,
         file,
         comment,
-        deadline
+        deadline:{
+          date,
+          time
+        }
       }) => {
         const submitStream = concat(
           of(() => dispatch(
@@ -90,7 +98,10 @@ export default compose(
               content,
               file,
               comment,
-              deadline
+              deadline:{
+                date: moment(date,'YYYY/MM/DD').isValid() ? date : '',
+                time: moment(time,'HH:mm').isValid() ? time : '',
+              }
             })
           )),
           of(() => updateAllField(defaultFields))

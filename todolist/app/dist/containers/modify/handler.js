@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 /* type */
 import { TASK_UPDATE } from '~/storage/reducer';
 
@@ -49,7 +51,10 @@ export default compose(
       content,
       file,
       comment,
-      deadline
+      deadline:{
+        date,
+        time
+      }
     }) => {
       const submitStream = concat(
         of(() => dispatch(
@@ -60,7 +65,10 @@ export default compose(
             content,
             file,
             comment,
-            deadline
+            deadline:{
+              date: moment(date,'YYYY/MM/DD').isValid() ? date : '',
+              time: moment(time,'HH:mm').isValid() ? time : '',
+            }
           })
         )),
         of(() => updateOneField('modifyMode', false))

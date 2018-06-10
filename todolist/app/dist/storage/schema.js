@@ -2,7 +2,10 @@ class Task {
   id: number;
   order: number;
   content: string;
-  deadline: string;
+  deadline: {
+    date: string,
+    time: string
+  };
   important: boolean;
   completed: boolean;
   comment: string;
@@ -12,7 +15,10 @@ class Task {
     this.id = this._createRandomKey();
     this.order = 0;
     this.content = '';
-    this.deadline = '';
+    this.deadline = {
+      date: '',
+      time: ''
+    };
     this.important = false;
     this.completed = false;
     this.comment = '';
