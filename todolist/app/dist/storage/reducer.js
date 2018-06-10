@@ -10,10 +10,24 @@ export const TASK_UPDATE = 'TASK_UPDATE';
 export const TASK_DELETE = 'TASK_DELETE';
 
 /* store */
-const defaultStore = [];
+const defaultStore = [
+  merge(new Task(), {
+    content: '吃飯',
+    important: true,
+    completed: true
+  }),
+  merge(new Task(), {
+    content: '睡覺',
+    completed: true
+  }),
+  merge(new Task(), {
+    content: '打東東'
+  })
+];
 
 const reducer = reducerCreator(defaultStore, {
-  [TASK_INSERT]: (preStore, payload) => append(merge(new Task(), payload), preStore),
+  [TASK_INSERT]: (preStore, payload) =>
+    append(merge(new Task(), payload), preStore),
   [TASK_UPDATE]: (preStore, payload) => {
     const { id, ...fields } = payload;
     const taskIdx = findIndex(propEq('id', id))(preStore);
