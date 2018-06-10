@@ -4,7 +4,7 @@ import { withProps } from 'recompose';
 import { filter } from 'ramda';
 
 export default compose(
-  withStore(STORE_KEY),
+  withStore(`${STORE_KEY}.data`),
   withProps(({ active, storeData: tasks }) => ({
     count: filter(item => (active === 'completed' ? item.completed : !item.completed), tasks).length
   })),
