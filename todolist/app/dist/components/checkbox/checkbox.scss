@@ -1,0 +1,81 @@
+@import "./app/assets/mixin/color.scss";
+
+.checkbox {
+  text-align: center;
+  position: relative;
+  .checkbox-toggle {
+    position: absolute;
+    top: -12px;
+    right: 15px;
+    border-width: 0;
+    outline: none;
+    width: 24px;
+    height: 24px;
+    display: none;
+    background-color: #FFF;
+    > i {
+      font-size: 0.8rem;
+      color: #FFF;
+      display: none;
+    }
+  }
+  .line {
+    position: absolute;
+    width: 24px;
+    height: 2px;
+    right: 15px;
+    background-color: $gray;
+    transition: all 0.3s;
+    &.first {
+      top: 0;
+    }
+    &.second {
+      top: -12px;
+      opacity: 0;
+      transform-origin: 0 100%;
+    }
+    &.third {
+      top: 12px;
+      opacity: 0;
+      transform-origin: 100% 0;
+    }
+    &.last {
+      top: 0;
+      transform: rotate(90deg);
+      transform-origin: 50% 50%;
+    }
+  }
+}
+
+.modify-mode {
+  .checkbox-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .line {
+    &.first {
+      top: -12px;
+      transform: rotate(0);
+    }
+    &.second, &.third {
+      opacity: 1;
+      transform: rotate(90deg);
+    }
+    &.last {
+      top: 12px;
+      transform: rotate(0);
+    }
+  }
+  &.checked {
+    .checkbox-toggle {
+      background-color: $blue;
+      > i {
+        display: block;
+      }
+    }
+    .line {
+      background-color: $blue;
+    }
+  }
+}
