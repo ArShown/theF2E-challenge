@@ -22,7 +22,7 @@ const defaultFields = {
   completed: false,
   important: false,
   content: '',
-  file: null,
+  file: '',
   comment: '',
   deadline: {
     date: '',
@@ -85,11 +85,25 @@ export default compose(
         content,
         file,
         comment,
-        deadline:{
+        deadline: {
           date,
           time
         }
       }) => {
+        /* moment obj */
+        const dateMoment = moment(date, 'YYYY/MM/DD');
+        const timeMoment = moment(time, 'HH:mm');
+
+        /* 寫入 deadline 格式 */
+        const deadline = {
+          date: dateMoment.isValid() ? dateMoment.format('YYYY/MM/DD') : '',
+          time: timeMoment.isValid() ? timeMoment.format('HH:mm') : ''
+        };
+
+        /* 判斷是不是只有輸入時間，是的話日期填今天*/
+        if (deadline.date === '')
+          deadline.date = moment().format('YYYY/MM/DD');
+
         const submitStream = concat(
           of(() => dispatch(
             emit(TASK_INSERT, {
@@ -98,10 +112,7 @@ export default compose(
               content,
               file,
               comment,
-              deadline:{
-                date: moment(date,'YYYY/MM/DD').isValid() ? date : '',
-                time: moment(time,'HH:mm').isValid() ? time : '',
-              }
+              deadline
             })
           )),
           of(() => updateAllField(defaultFields))

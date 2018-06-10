@@ -9,7 +9,7 @@ class Task {
   important: boolean;
   completed: boolean;
   comment: string;
-  file: ?string;
+  file: string;
 
   constructor() {
     this.id = this._createRandomKey();
@@ -22,7 +22,7 @@ class Task {
     this.important = false;
     this.completed = false;
     this.comment = '';
-    this.file = null;
+    this.file = '';
   }
 
   _createRandomKey() {

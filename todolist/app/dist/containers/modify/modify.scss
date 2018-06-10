@@ -7,6 +7,7 @@
 
 .trigger {
   @extend .trigger;
+  flex-direction: column;
   color: #000;
   border-width: 0;
   background-color: $lighten-0-gray;
@@ -14,6 +15,38 @@
   .modify-mode & {
     border-bottom: 2px solid $gray;
   }
+}
+
+.trigger-main {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.trigger-meta {
+  position: relative;
+  width: 100%;
+  height: 0;
+  display: none;
+  padding-left: 60px;
+  > span {
+    margin-right: 10px;
+  }
+}
+
+.trigger-content {
+  @extend .trigger-content;
+  width: calc(100% - 60px - 4rem);
+}
+
+.trigger-msg-ellipsis {
+  position: relative;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .trigger-checkbox {
@@ -36,6 +69,10 @@
       background-color: $gray;
     }
   }
+}
+
+.late {
+  color: #F00;
 }
 
 .modify-mode {
@@ -61,6 +98,15 @@
 }
 
 .edit-frame {
+  &[data-multiple=true]:not(.modify-mode) {
+    &, .trigger {
+      height: 4rem;
+    }
+    .trigger-meta {
+      display: block;
+      height: 2rem;
+    }
+  }
   &[data-important=true] {
     .trigger {
       background-color: $cream;
