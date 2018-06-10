@@ -65,7 +65,7 @@ export default compose(
         };
 
         /* 判斷是不是只有輸入時間，是的話日期填今天*/
-        if (deadline.date === '') deadline.date = moment().format('YYYY/MM/DD');
+        if (deadline.time !== '' && deadline.date === '') deadline.date = moment().format('YYYY/MM/DD');
 
         const submitStream = concat(
           of(() =>
@@ -99,7 +99,7 @@ export default compose(
       file.trim() !== '' ||
       comment.trim() !== ''
       : false,
-    isLate: date !== '' ? moment().isAfter(`${date}${time !== '' ? ` ${time}` : ''}`) : false
+    isLate: date !== '' ? moment().isSameOrAfter(`${date}${time !== '' ? ` ${time}` : ''}`) : false
   })),
   withStyle(modify)
 );

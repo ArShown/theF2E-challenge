@@ -11,7 +11,7 @@ export const TASK_DELETE = 'TASK_DELETE';
 
 /* store */
 const defaultStore = {
-  increment: 2,
+  increment: 3,
   data: [
     merge(new Task(), {
       content: '吃飯',
@@ -27,6 +27,14 @@ const defaultStore = {
     merge(new Task(), {
       content: '打東東',
       order: 2
+    }),
+    merge(new Task(), {
+      content: '這是一個逾期的任務',
+      order: 3,
+      deadline: {
+        date: '2018/06/09',
+        time: ''
+      }
     })
   ]
 };

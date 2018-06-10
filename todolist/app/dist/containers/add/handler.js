@@ -101,7 +101,7 @@ export default compose(
         };
 
         /* 判斷是不是只有輸入時間，是的話日期填今天*/
-        if (deadline.date === '')
+        if (deadline.time !== '' && deadline.date === '')
           deadline.date = moment().format('YYYY/MM/DD');
 
         const submitStream = concat(
