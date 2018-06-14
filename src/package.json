@@ -6,6 +6,8 @@
   "scripts": {
     "start:todolist": "better-npm-run start:todolist",
     "output:todolist": "better-npm-run output:todolist",
+    "start:filter": "better-npm-run start:filter",
+    "output:filter": "better-npm-run output:filter",
     "test": "better-npm-run test",
     "coverage-report": "NODE_ENV=test nyc report --reporter=lcov --reporter=text --reporter=text-summary",
     "flow-install": "flow-typed install --overwrite",
@@ -16,22 +18,42 @@
   },
   "betterScripts": {
     "start:todolist": {
-      "command": "better-npm-run build; better-npm-run start",
+      "command": "better-npm-run start",
       "env": {
-        "NODE_ENV": "development",
         "NODE_DIR": "todolist"
       }
     },
     "output:todolist": {
-      "command": "better-npm-run build; better-npm-run output",
+      "command": "better-npm-run output",
       "env": {
-        "NODE_ENV": "production",
         "NODE_DIR": "todolist"
       }
     },
-    "build": "node app/build.js",
-    "output": "webpack -p --config ./webpack.prod.config.js",
-    "start": "webpack-dev-server --devtool eval --progress --colors --config ./webpack.dev.config.js --open",
+    "start:filter": {
+      "command": "better-npm-run start",
+      "env": {
+        "NODE_DIR": "filter"
+      }
+    },
+    "output:filter": {
+      "command": "better-npm-run output",
+      "env": {
+        "NODE_DIR": "filter"
+      }
+    },
+    "output": {
+      "command": "better-npm-run build; webpack -p --config ./webpack.prod.config.js",
+      "env": {
+        "NODE_ENV": "production"
+      }
+    },
+    "start": {
+      "command": "better-npm-run build; webpack-dev-server --devtool eval --progress --colors --config ./webpack.dev.config.js --open",
+      "env": {
+        "NODE_ENV": "development"
+      }
+    },
+    "build": "node app/build.js || exit",
     "test": {
       "command": "nyc mocha --opts ./.mochaopts",
       "env": {
