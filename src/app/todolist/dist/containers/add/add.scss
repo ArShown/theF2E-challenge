@@ -1,0 +1,144 @@
+@import "./app/todolist/assets/mixin/color.scss";
+
+.add-frame {
+  position: relative;
+  border-radius: 5px;
+  height: 3rem;
+  overflow: hidden;
+}
+
+.trigger {
+  position: relative;
+  height: 3rem;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #FFFFFF;
+  color: $gray;
+  font-size: 1.2rem;
+  border: 2px solid $gray;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 0 10px 0 0;
+  .add-mode & {
+    border-top-color: transparent;
+    border-left-color: transparent;
+    border-right-color: transparent;
+    background-color: transparent;
+    border-radius: 5px 5px 0 0;
+  }
+}
+
+.trigger-checkbox {
+  flex: 0 0 60px;
+  text-align: center;
+}
+
+.trigger-icon {
+  flex: 0 0 2rem;
+  text-align: center;
+  display: none;
+}
+
+.trigger-content {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.add-input, .trigger-msg {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+}
+
+.add-input {
+  border-width: 0;
+  outline: none;
+  padding: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  opacity: 0;
+  background-color: transparent;
+  &::placeholder {
+    color: $gray;
+  }
+}
+
+.create-form {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  background-color: $lighten-0-gray;
+  border-radius: 0 0 5px 5px;
+  overflow: hidden;
+  transition: all 0.1s;
+  transform: translateY(-100%);
+  opacity: 0;
+  display: flex;
+  flex-direction: column;
+
+  &-body {
+    height: 100%;
+  }
+  &-footer {
+    display: flex;
+    height: 3.4rem;
+  }
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  font-size: 1rem;
+  cursor: pointer;
+  > i {
+    margin-right: 10px;
+  }
+
+  &.cancel {
+    background-color: #FFF;
+    color: $red;
+  }
+
+  &.add {
+    background-color: $blue;
+    color: #FFF;
+    &[disabled] {
+      background-color: $gray;
+    }
+  }
+}
+
+.add-mode {
+  box-shadow: 0 4px 4px 0 $gray;
+  height: auto;
+  .trigger {
+    background-color: $lighten-0-gray;
+  }
+  .trigger-icon {
+    display: block;
+  }
+  .add-input {
+    z-index: 1;
+    opacity: 1;
+  }
+  .trigger-msg {
+    display: none;
+  }
+  .trigger-icon.edit {
+    color: $blue;
+  }
+  .create-form {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

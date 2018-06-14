@@ -1,0 +1,13 @@
+@import "./app/todolist/assets/mixin/color.scss";
+
+.header {
+  background-color: $blue;
+}
+
+.add-area {
+  padding: 1rem 0;
+}
+
+.task-list{
+  padding: 0 0 1rem;
+}
