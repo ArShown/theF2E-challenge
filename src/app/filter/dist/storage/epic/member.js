@@ -16,13 +16,13 @@ export const fetchData = action$ =>
   action$.ofType(FETCH_DATA).pipe(
     switchMap(action => {
       const {
-        successCallback = res => emit(FETCH_SUCCESS, res),
-        failedCallback = err => emit(FETCH_FAILED, err)
+        successCallback = map(res => emit(FETCH_SUCCESS, res)),
+        failedCallback = catchError(err => emit(FETCH_FAILED, err))
       } = action.payload || {};
 
       return ajax.getJSON('https://www.thef2e.com/api/signUpTotal').pipe(
-        map(successCallback),
-        catchError(failedCallback)
+        successCallback,
+        failedCallback
       );
     })
   );

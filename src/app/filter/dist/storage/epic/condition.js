@@ -6,7 +6,12 @@ import {
   SET_STAGE,
   SET_IS_ON_TIME
 } from '../reducer/condition';
-import { FILTER_UPDATE, FETCH_LIST, FETCH_LIST_BY_EMAIL } from './work';
+import {
+  FILTER_UPDATE,
+  FETCH_LIST,
+  FETCH_LIST_BY_EMAIL,
+  FETCH_SUCCESS
+} from './work';
 
 /* store key */
 import { STORE_KEY as WORK_STORE_KEY } from '../reducer/work';
@@ -16,8 +21,8 @@ import { STORE_KEY as CONDITION_STORE_KEY } from '../reducer/condition';
 import { emit } from '~/core/action/effects';
 
 /* helper */
-import { empty } from 'rxjs';
-import { map, mapTo } from 'rxjs/operators';
+import { empty, concat, of } from 'rxjs';
+import { map, mapTo, flatMap } from 'rxjs/operators';
 import { filter, difference, allPass, findIndex, equals } from 'ramda';
 
 /* epic type */
@@ -44,8 +49,13 @@ export const filterAppendTags = (action$, store$) =>
         ? [emit(APPEND_TAGS, action.payload), emit(FILTER_WITH_CONDITION)]
         : [
           emit(APPEND_TAGS, action.payload),
-          emit(FETCH_LIST, { query }),
-          emit(FILTER_WITH_CONDITION)
+          emit(FETCH_LIST, {
+            query,
+            successCallback: flatMap(res => concat(
+              of(emit(FETCH_SUCCESS, res)),
+              of(emit(FILTER_WITH_CONDITION))
+            ))
+          })
         ];
     })
   );
@@ -69,8 +79,13 @@ export const filterRemoveTags = (action$, store$) =>
           ? [emit(REMOVE_TAGS, action.payload), emit(FILTER_WITH_CONDITION)]
           : [
             emit(REMOVE_TAGS, action.payload),
-            emit(FETCH_LIST, { query }),
-            emit(FILTER_WITH_CONDITION)
+            emit(FETCH_LIST, {
+              query,
+              successCallback: flatMap(res => concat(
+                of(emit(FETCH_SUCCESS, res)),
+                of(emit(FILTER_WITH_CONDITION))
+              ))
+            })
           ];
       }
     })
@@ -81,15 +96,21 @@ export const filterWithStage = (action$, store$) =>
     map(action => {
       const email = store$.value[CONDITION_STORE_KEY]['email'];
       const tags = store$.value[CONDITION_STORE_KEY]['tags'];
-      let query = { stage: action.payload };
+      let query = {};
+      if (action.payload !== '') query.stage = action.payload;
       if (tags.length > 0) query.tag = tags[0];
 
       return email
         ? [emit(SET_STAGE, action.payload), emit(FILTER_WITH_CONDITION)]
         : [
           emit(SET_STAGE, action.payload),
-          emit(FETCH_LIST, { query }),
-          emit(FILTER_WITH_CONDITION)
+          emit(FETCH_LIST, {
+            query,
+            successCallback: flatMap(res => concat(
+              of(emit(FETCH_SUCCESS, res)),
+              of(emit(FILTER_WITH_CONDITION))
+            ))
+          })
         ];
     })
   );
@@ -104,13 +125,30 @@ export const filterWithOnTime = action$ =>
 
 export const filterWithEmail = action$ =>
   action$.ofType(FILTER_WITH_EMAIL).pipe(
-    map(action => [
-      emit(SET_EMAIL, action.payload),
-      emit(action.payload ? FETCH_LIST_BY_EMAIL : FETCH_LIST, {
-        email: action.payload
-      }),
-      emit(FILTER_WITH_CONDITION)
-    ])
+    map(action => {
+
+      if (action.payload !== '')
+        return [
+          emit(SET_EMAIL, action.payload),
+          emit(FETCH_LIST_BY_EMAIL, {
+            email: action.payload,
+            successCallback: flatMap(res => concat(
+              of(emit(FETCH_SUCCESS, res.response)),
+              of(emit(FILTER_WITH_CONDITION))
+            ))
+          })
+        ];
+
+      return [
+        emit(SET_EMAIL, action.payload),
+        emit(FETCH_LIST, {
+          successCallback: flatMap(res => concat(
+            of(emit(FETCH_SUCCESS, res)),
+            of(emit(FILTER_WITH_CONDITION))
+          ))
+        })
+      ];
+    })
   );
 
 export const filterWithCondition = (action$, store$) => {
@@ -119,7 +157,7 @@ export const filterWithCondition = (action$, store$) => {
   const filterStage = stage => work =>
     stage === '' ? true : work.stage === stage;
   const filterOnTime = onTime => work =>
-    !onTime ? true : work.onTime === !onTime;
+    onTime ? true : work.onTime === false;
 
   return action$.ofType(FILTER_WITH_CONDITION).pipe(
     map(action => {

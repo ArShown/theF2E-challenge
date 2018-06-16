@@ -4,13 +4,13 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 
-export default handler(({ storeData: checked, changeHandler }) =>
+export default handler(({ storeData: onTime, changeHandler }) =>
   <FormGroup row>
     <FormControlLabel
       control={
         <Checkbox
-          checked={checked}
-          onChange={changeHandler(checked)}
+          checked={!onTime}
+          onChange={changeHandler(onTime)}
           color="primary"
         />
       }

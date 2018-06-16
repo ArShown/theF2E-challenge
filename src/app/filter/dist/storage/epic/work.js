@@ -21,19 +21,17 @@ export const fetchList = action$ =>
     switchMap(action => {
       const {
         query = {},
-        successCallback = res => emit(FETCH_SUCCESS, res),
-        failedCallback = err => emit(FETCH_FAILED, err)
+        successCallback = map(res => emit(FETCH_SUCCESS, res)),
+        failedCallback = catchError(err => emit(FETCH_FAILED, err))
       } =
-        action.payload || {};
+      action.payload || {};
 
-      return ajax
-        .getJSON(
-          `https://www.thef2e.com/api/codeList?${join(
-            '&',
-            ramdaMap(key => `${key}=${query[key]}`, keys(query))
-          )}`
-        )
-        .pipe(map(successCallback), catchError(failedCallback));
+      return ajax.getJSON(
+        `https://www.thef2e.com/api/codeList?${join(
+          '&',
+          ramdaMap(key => `${key}=${query[key]}`, keys(query))
+        )}`
+      ).pipe(successCallback, failedCallback);
     })
   );
 
@@ -42,35 +40,29 @@ export const fetchListByEmail = action$ =>
     switchMap(action => {
       const {
         email,
-        successCallback = res => emit(FETCH_SUCCESS, res),
-        failedCallback = err => emit(FETCH_FAILED, err)
+        successCallback = map(res => emit(FETCH_SUCCESS, res.response)),
+        failedCallback = catchError(err => emit(FETCH_FAILED, err))
       } =
-        action.payload || {};
+      action.payload || {};
 
-      return ajax
-        .post(
-          'https://www.thef2e.com/api/stageCheck',
-          { email },
-          { 'Content-Type': 'application/json' }
-        )
-        .pipe(
-          map(res => emit(FETCH_SUCCESS, res.response)),
-          catchError(failedCallback)
-        );
+      return ajax.post(
+        'https://www.thef2e.com/api/stageCheck',
+        { email },
+        { 'Content-Type': 'application/json' }
+      ).pipe(
+        successCallback,
+        failedCallback
+      );
     })
   );
 
 /* update */
 export const filterUpdate = action$ =>
-  action$
-    .ofType(FILTER_UPDATE)
-    .pipe(map(action => emit(WORK_UPDATE, action.payload)));
+  action$.ofType(FILTER_UPDATE).pipe(map(action => emit(WORK_UPDATE, action.payload)));
 
 /* save */
 export const saveToStore = action$ =>
-  action$
-    .ofType(FETCH_SUCCESS)
-    .pipe(map(action => emit(WORK_INIT, action.payload)));
+  action$.ofType(FETCH_SUCCESS).pipe(map(action => emit(WORK_INIT, action.payload)));
 
 /* error */
 export const errorEmitter = action$ =>

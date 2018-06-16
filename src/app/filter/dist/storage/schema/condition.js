@@ -2,7 +2,7 @@ class Condition {
   constructor(){
     this.email = '';
     this.tags = [];
-    this.isOnTime = false;
+    this.isOnTime = true;
     this.stage = '';
   }
 }

@@ -16,5 +16,9 @@ export default compose(withDispatch, withStateHandlers({
   keyPressHandler: ({ dispatch, email }) => (e) => {
     if (e.charCode === 13)
       dispatch(emit(FILTER_WITH_EMAIL, email));
+  },
+  clearEmail: ({ setEmail, dispatch }) => () => {
+    setEmail('');
+    dispatch(emit(FILTER_WITH_EMAIL, ''));
   }
 }));
