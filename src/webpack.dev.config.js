@@ -10,8 +10,6 @@ const {
   PROJECT_PORT
 } = require('./config/global-constants');
 
-console.log(process.env.NODE_DIR);
-
 const rootPath = path.resolve(__dirname, 'app/' + process.env.NODE_DIR);
 
 module.exports = Object.assign(baseConfig, {
@@ -63,7 +61,7 @@ module.exports = Object.assign(baseConfig, {
       hash: true,
       cache: true,
       filename: 'index.html',
-      template: 'entrance/index.html'
+      template: 'entrance/' + process.env.NODE_DIR + '.html'
     })
   ])
 });

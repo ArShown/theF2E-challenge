@@ -6,15 +6,16 @@
   "scripts": {
     "start:todolist": "better-npm-run start:todolist",
     "output:todolist": "better-npm-run output:todolist",
+    "test:todolist": "better-npm-run test:todolist",
     "start:filter": "better-npm-run start:filter",
     "output:filter": "better-npm-run output:filter",
+    "test:filter": "better-npm-run test:filter",
     "test": "better-npm-run test",
     "coverage-report": "NODE_ENV=test nyc report --reporter=lcov --reporter=text --reporter=text-summary",
     "flow-install": "flow-typed install --overwrite",
     "flow-test": "flow || notify -t 'Flow Type' -m 'something mistake'",
     "flow-test:watch": "npm run flow-test; fswatch -e ./**/* -o 1 | xargs -n1 -I{} sh -c 'tput setaf 6; date \"+\n[%m/%d %H:%M:%S]\";tput sgr0; npm run flow-test'",
     "mocha-test:watch": "NODE_ENV=test mocha --watch --opts ./.mochaopts",
-    "precommit": "lint-staged"
   },
   "betterScripts": {
     "start:todolist": {
@@ -29,6 +30,12 @@
         "NODE_DIR": "todolist"
       }
     },
+    "test:todolist": {
+      "command": "better-npm-run test",
+      "env": {
+        "NODE_DIR": "todolist"
+      }
+    },
     "start:filter": {
       "command": "better-npm-run start",
       "env": {
@@ -37,6 +44,12 @@
     },
     "output:filter": {
       "command": "better-npm-run output",
+      "env": {
+        "NODE_DIR": "filter"
+      }
+    },
+    "test:filter": {
+      "command": "better-npm-run test",
       "env": {
         "NODE_DIR": "filter"
       }
@@ -76,6 +89,7 @@
     "@babel/preset-stage-0": "^7.0.0-beta.49",
     "@babel/register": "^7.0.0-beta.49",
     "@babel/runtime": "^7.0.0-beta.49",
+    "@material-ui/core": "^1.2.1",
     "ajv": "^6.5.0",
     "autoprefixer": "^7.1.2",
     "babel-core": "^7.0.0-bridge.0",

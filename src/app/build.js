@@ -3,6 +3,7 @@ const path = require('path');
 const fs = require('fs');
 
 const projectPath = path.resolve(__dirname, './' + process.env.NODE_DIR);
+const getDirPath = (...dir) => path.resolve(projectPath, ...dir);
 
 /* 掃描 config.BUILD_DIRECTORIES 底下的所有 config.js */
 function writeConfigRequiredBy() {
@@ -10,9 +11,7 @@ function writeConfigRequiredBy() {
   function requireLoop(directory, root = './') {
     let content = [];
     /* 讀取資料夾 */
-    const dirs = fs.readdirSync(
-      path.resolve(projectPath, `./dist/${directory}/`, root)
-    );
+    const dirs = fs.readdirSync(getDirPath(`./dist/${directory}/`, root));
     /* 讀取檔案 */
     for (const i in dirs) {
       /* 檔案相對路徑 */
@@ -23,8 +22,7 @@ function writeConfigRequiredBy() {
         content.push(`require('~/${directory}/config').default`);
       } else {
         /* 當前檔案的絕對路徑 */
-        const dirPath = path.resolve(
-          projectPath,
+        const dirPath = getDirPath(
           `./dist/${directory}/`,
           rootDir
         );
@@ -47,19 +45,19 @@ function writeConfigRequiredBy() {
   }
 
   /* 開始遞迴 */
-  const contentStream = config.BUILD_DIRECTORIES.split(',').reduce(function(
-    content,
-    directory
-  ) {
-    return content.concat(requireLoop(directory.trim()));
-  },
-  []);
+  const contentStream = config.BUILD_DIRECTORIES.split(',').reduce(
+    function (content,
+      directory) {
+      return content.concat(requireLoop(directory.trim()));
+    },
+    []
+  );
 
   /* 建立檔案 */
   fs.writeFile(
-    path.resolve(projectPath, './dist/core/roots/build.js'),
+    getDirPath('./dist/core/roots/build.js'),
     'export default [' + contentStream.join(',\n') + ']',
-    function(err) {
+    function (err) {
       if (err) {
         console.log('[fs]', 'writeRequiredBy 檔案寫入失敗！');
         return false;
@@ -75,17 +73,14 @@ function writeExtensionsRequire() {
 
   /* 變更檔名 */
   const fileRename = filename =>
-    filename
-      .replace('.js', '')
-      .split('-')
-      .reduce(function(name, split, index) {
-        if (index === 0) return split;
-        return (
-          name +
-          split.substring(0, 1).toUpperCase() +
-          split.substring(1, split.length)
-        );
-      }, '');
+    filename.replace('.js', '').split('-').reduce(function (name, split, index) {
+      if (index === 0) return split;
+      return (
+        name +
+        split.substring(0, 1).toUpperCase() +
+        split.substring(1, split.length)
+      );
+    }, '');
 
   /* core/ 建立索引檔 */
   function init(rootPath = './dist/core') {
@@ -96,10 +91,10 @@ function writeExtensionsRequire() {
           str => 'dist/core/' + str.replace(/\./g, '/')
         ).includes(dirRootPath)
       ) {
-        const dirs = fs.readdirSync(path.resolve(projectPath, dirRootPath));
+        const dirs = fs.readdirSync(getDirPath(dirRootPath));
         /* 向下尋找 */
         for (const i in dirs) {
-          const targetDir = path.resolve(projectPath, dirRootPath, dirs[i]);
+          const targetDir = getDirPath(dirRootPath, dirs[i]);
           /* 不是資料夾就跳過 */
           if (!fs.statSync(targetDir).isDirectory()) continue;
           /* 掃描資料夾 */
@@ -113,12 +108,11 @@ function writeExtensionsRequire() {
         content.push(`export { compose } from 'redux';`);
 
       const dirRootResolvePath = fs.readdirSync(
-        path.resolve(projectPath, dirRootPath)
+        getDirPath(dirRootPath)
       );
       for (const i in dirRootResolvePath) {
         const dirRootFile = dirRootResolvePath[i];
-        const dirRootFileResolvePath = path.resolve(
-          projectPath,
+        const dirRootFileResolvePath = getDirPath(
           dirRootPath,
           dirRootFile
         );
@@ -134,14 +128,14 @@ function writeExtensionsRequire() {
         content.push(
           `export { default as ${fileRename(dirRootFile)} } from './${
             dirRootFile
-          }';`
+            }';`
         );
       }
 
       fs.writeFile(
-        path.resolve(projectPath, dirRootPath) + '/index.js',
+        getDirPath(dirRootPath) + '/index.js',
         content.join('\n'),
-        function(err) {
+        function (err) {
           if (err) {
             console.log('[fs]', 'writeExtensionsRequire 檔案寫入失敗！');
             return false;
@@ -152,7 +146,7 @@ function writeExtensionsRequire() {
 
     const dirs = fs.readdirSync(path.resolve(projectPath, rootPath));
     for (const i in dirs) {
-      const targetDir = path.resolve(projectPath, rootPath, dirs[i]);
+      const targetDir = getDirPath(rootPath, dirs[i]);
       /* 不是資料夾就跳過 */
       if (!fs.statSync(targetDir).isDirectory()) continue;
       /* 掃描資料夾 */
@@ -161,9 +155,8 @@ function writeExtensionsRequire() {
   }
 
   /* 路徑轉換 */
-  const corePath = function(extensionsDir) {
-    return path.resolve(
-      projectPath,
+  const corePath = function (extensionsDir) {
+    return getDirPath(
       './dist/core',
       extensionsDir.replace(/\./g, '/')
     );
@@ -173,12 +166,12 @@ function writeExtensionsRequire() {
   function extension() {
     /* 沒有擴充資料夾就不用擴充囉 */
     const isHasExtension = fs.existsSync(
-      path.resolve(projectPath, './extensions')
+      getDirPath('./extensions')
     );
     if (!isHasExtension) {
       return false;
     }
-    const dirs = fs.readdirSync(path.resolve(projectPath, './extensions'));
+    const dirs = fs.readdirSync(getDirPath('./extensions'));
     for (const i in dirs) {
       const extensionsDir = dirs[i];
       if (THESE_DIRECTORIES_COULD_NOT_BEEN_COVER.includes(extensionsDir)) {
@@ -192,13 +185,13 @@ function writeExtensionsRequire() {
       }
 
       const extensionFiles = fs.readdirSync(
-        path.resolve(projectPath, './extensions', extensionsDir)
+        getDirPath('./extensions', extensionsDir)
       );
       let content = [];
       if (extensionsDir === 'container')
         content.push(`export { compose } from 'redux';`);
 
-      extensionFiles.forEach(function(filename) {
+      extensionFiles.forEach(function (filename) {
         if (filename === 'index.js') {
           console.log('擴充檔名不能為 index.js');
           return;
@@ -207,14 +200,14 @@ function writeExtensionsRequire() {
         content.push(
           `export { default as ${fileRename(filename)} } from 'ext/${
             extensionsDir
-          }/${filename}';`
+            }/${filename}';`
         );
       });
 
       fs.appendFile(
         corePath(extensionsDir) + `/index.js`,
         '\n' + content.join('\n'),
-        function(err) {
+        function (err) {
           if (err) {
             console.log('[fs]', 'writeExtensionsRequire 檔案寫入失敗！');
             return false;
@@ -223,6 +216,7 @@ function writeExtensionsRequire() {
       );
     }
   }
+
   init();
   extension();
 }
@@ -230,7 +224,7 @@ function writeExtensionsRequire() {
 function writeAssetsRequire() {
   function requireLoop(directory) {
     let content = [];
-    const targetPath = path.resolve(projectPath, `./assets/${directory}`);
+    const targetPath = getDirPath(`./assets/${directory}`);
     const isExist = fs.existsSync(targetPath);
     if (isExist) {
       const target = fs.statSync(targetPath);
@@ -253,15 +247,15 @@ function writeAssetsRequire() {
   let exportContent = [];
   if (config.INCLUDE_ASSETS.trim() !== '') {
     const dirName = config.INCLUDE_ASSETS.split(',');
-    exportContent = dirName.reduce(function(content, directory) {
+    exportContent = dirName.reduce(function (content, directory) {
       return content.concat(requireLoop(directory.trim()));
     }, []);
   }
 
   fs.writeFile(
-    path.join(path.resolve(projectPath, './dist/core/container'), '_assets.js'),
+    getDirPath('./dist/core/container', '_assets.js'),
     'export default [' + exportContent.join(',\n') + ']',
-    function(err) {
+    function (err) {
       if (err) {
         console.log('[fs]', 'writeAssetsRequire 檔案寫入失敗！');
         return false;
