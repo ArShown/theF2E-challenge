@@ -15,7 +15,7 @@ export const SimpleAppBar = () =>
       <Toolbar>
         <Grid container>
           <Grid item xs={12} sm={12} md={4}>
-            <Typography variant="title" color="inherit" styleName="text-center">
+            <Typography variant="title" color="inherit">
               The F2E
             </Typography>
           </Grid>

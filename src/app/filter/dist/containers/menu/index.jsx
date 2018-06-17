@@ -3,11 +3,11 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
-import Member from '../member';
-import Week from '../week';
-import Tags from '../tags';
-import Late from '../late';
-import Email from '../email';
+import Member from './member';
+import Week from './week';
+import Tags from './tags';
+import Late from './late';
+import Email from './email';
 
 export default () => <List dense={false}>
   <ListItem>

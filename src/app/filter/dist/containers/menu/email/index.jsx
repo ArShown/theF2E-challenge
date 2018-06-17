@@ -16,9 +16,9 @@ export default handler(({ email, changeHandler, keyPressHandler, clearEmail }) =
     placeholder="Email"
     fullWidth
     endAdornment={
-      <InputAdornment position="end">
+      email ? <InputAdornment position="end">
         <IconButton onClick={clearEmail}><Icon>close</Icon></IconButton>
-      </InputAdornment>
+      </InputAdornment> : null
     }
   />
 );

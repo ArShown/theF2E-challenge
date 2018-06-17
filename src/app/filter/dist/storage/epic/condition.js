@@ -22,7 +22,7 @@ import { emit } from '~/core/action/effects';
 
 /* helper */
 import { empty, concat, of } from 'rxjs';
-import { map, mapTo, flatMap } from 'rxjs/operators';
+import { map, mapTo, switchMap } from 'rxjs/operators';
 import { filter, difference, allPass, findIndex, equals } from 'ramda';
 
 /* epic type */
@@ -30,33 +30,49 @@ export const FILTER_APPEND_TAG = 'CONDITION_FILTER_APPEND_TAG';
 export const FILTER_REMOVE_TAG = 'CONDITION_FILTER_REMOVE_TAG';
 export const FILTER_WITH_STAGE = 'CONDITION_FILTER_WITH_STAGE';
 export const FILTER_WITH_ON_TIME = 'CONDITION_FILTER_WITH_ON_TIME';
-export const FILTER_WITH_EMAIL = 'FILTER_WITH_EMAIL';
+export const FILTER_WITH_EMAIL = 'CONDITION_FILTER_WITH_EMAIL';
+export const FILTER_TO_REFETCH = 'CONDITION_FILTER_TO_REFETCH';
 export const FILTER_WITH_CONDITION = 'CONDITION_FILTER_WITH_CONDITION';
+
+export const filterToReFetch = (action$, store$) =>
+  action$.ofType(FILTER_TO_REFETCH).pipe(
+    map(action => {
+      const email = store$.value[CONDITION_STORE_KEY]['email'];
+      if (email)
+        return emit(FETCH_LIST_BY_EMAIL, {
+          email,
+          successCallback: switchMap(res => concat(
+            of(emit(FETCH_SUCCESS, res.response)),
+            of(emit(FILTER_WITH_CONDITION))
+          ))
+        });
+
+      const tags = store$.value[CONDITION_STORE_KEY]['tags'];
+      const stage = store$.value[CONDITION_STORE_KEY]['stage'];
+      let query = {};
+      if (tags.length > 0) query.tag = tags[0];
+      if (stage !== '') query.stage = stage;
+
+      return emit(FETCH_LIST, {
+        query,
+        successCallback: switchMap(res => concat(
+          of(emit(FETCH_SUCCESS, res)),
+          of(emit(FILTER_WITH_CONDITION))
+        ))
+      });
+    })
+  );
 
 export const filterAppendTags = (action$, store$) =>
   action$.ofType(FILTER_APPEND_TAG).pipe(
     map(action => {
-      const email = store$.value[CONDITION_STORE_KEY]['email'];
       const tags = store$.value[CONDITION_STORE_KEY]['tags'];
-      const stage = store$.value[CONDITION_STORE_KEY]['stage'];
-      if (tags.length > 0)
-        return [emit(APPEND_TAGS, action.payload), emit(FILTER_WITH_CONDITION)];
+      const email = store$.value[CONDITION_STORE_KEY]['email'];
 
-      let query = { tag: action.payload };
-      if (stage !== '') query.stage = stage;
-
-      return email
-        ? [emit(APPEND_TAGS, action.payload), emit(FILTER_WITH_CONDITION)]
-        : [
-          emit(APPEND_TAGS, action.payload),
-          emit(FETCH_LIST, {
-            query,
-            successCallback: flatMap(res => concat(
-              of(emit(FETCH_SUCCESS, res)),
-              of(emit(FILTER_WITH_CONDITION))
-            ))
-          })
-        ];
+      return [
+        emit(APPEND_TAGS, action.payload),
+        emit(tags.length > 0 || email ? FILTER_WITH_CONDITION : FILTER_TO_REFETCH)
+      ];
     })
   );
 
@@ -65,29 +81,13 @@ export const filterRemoveTags = (action$, store$) =>
     map(action => {
       const email = store$.value[CONDITION_STORE_KEY]['email'];
       const tags = store$.value[CONDITION_STORE_KEY]['tags'];
-      const stage = store$.value[CONDITION_STORE_KEY]['stage'];
-
+      /* 移除的標籤序號 */
       const idx = findIndex(equals(action.payload), tags);
-      if (idx > 0) {
-        return [emit(REMOVE_TAGS, action.payload), emit(FILTER_WITH_CONDITION)];
-      } else {
-        let query = {};
-        if (tags.length > 1) query.tag = tags[1];
-        if (stage !== '') query.stage = stage;
 
-        return email
-          ? [emit(REMOVE_TAGS, action.payload), emit(FILTER_WITH_CONDITION)]
-          : [
-            emit(REMOVE_TAGS, action.payload),
-            emit(FETCH_LIST, {
-              query,
-              successCallback: flatMap(res => concat(
-                of(emit(FETCH_SUCCESS, res)),
-                of(emit(FILTER_WITH_CONDITION))
-              ))
-            })
-          ];
-      }
+      return [
+        emit(REMOVE_TAGS, action.payload),
+        emit(email || idx > 0 ? FILTER_WITH_CONDITION : FILTER_TO_REFETCH)
+      ];
     })
   );
 
@@ -95,23 +95,11 @@ export const filterWithStage = (action$, store$) =>
   action$.ofType(FILTER_WITH_STAGE).pipe(
     map(action => {
       const email = store$.value[CONDITION_STORE_KEY]['email'];
-      const tags = store$.value[CONDITION_STORE_KEY]['tags'];
-      let query = {};
-      if (action.payload !== '') query.stage = action.payload;
-      if (tags.length > 0) query.tag = tags[0];
 
-      return email
-        ? [emit(SET_STAGE, action.payload), emit(FILTER_WITH_CONDITION)]
-        : [
-          emit(SET_STAGE, action.payload),
-          emit(FETCH_LIST, {
-            query,
-            successCallback: flatMap(res => concat(
-              of(emit(FETCH_SUCCESS, res)),
-              of(emit(FILTER_WITH_CONDITION))
-            ))
-          })
-        ];
+      return [
+        emit(SET_STAGE, action.payload),
+        emit(email ? FILTER_WITH_CONDITION : FILTER_TO_REFETCH)
+      ];
     })
   );
 
@@ -125,30 +113,10 @@ export const filterWithOnTime = action$ =>
 
 export const filterWithEmail = action$ =>
   action$.ofType(FILTER_WITH_EMAIL).pipe(
-    map(action => {
-
-      if (action.payload !== '')
-        return [
-          emit(SET_EMAIL, action.payload),
-          emit(FETCH_LIST_BY_EMAIL, {
-            email: action.payload,
-            successCallback: flatMap(res => concat(
-              of(emit(FETCH_SUCCESS, res.response)),
-              of(emit(FILTER_WITH_CONDITION))
-            ))
-          })
-        ];
-
-      return [
-        emit(SET_EMAIL, action.payload),
-        emit(FETCH_LIST, {
-          successCallback: flatMap(res => concat(
-            of(emit(FETCH_SUCCESS, res)),
-            of(emit(FILTER_WITH_CONDITION))
-          ))
-        })
-      ];
-    })
+    map(action => [
+      emit(SET_EMAIL, action.payload),
+      emit(FILTER_TO_REFETCH)
+    ])
   );
 
 export const filterWithCondition = (action$, store$) => {
@@ -183,6 +151,7 @@ export const filterWithCondition = (action$, store$) => {
 
 /* export epic */
 export const epics = [
+  filterToReFetch,
   filterAppendTags,
   filterRemoveTags,
   filterWithStage,

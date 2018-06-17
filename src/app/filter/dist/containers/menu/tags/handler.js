@@ -1,11 +1,11 @@
-import { compose, withDispatch, withStyle, withStore } from '../../core/container/index';
+import { compose, withDispatch, withStyle, withStore } from '~/core/container/index';
 import { lifecycle, withHandlers } from 'recompose';
-import { emit } from '../../core/action/effects';
-import { STORE_KEY as TAG_STORE_KEY } from '../../storage/reducer/tag';
+import { emit } from '~/core/action/effects';
+import { STORE_KEY as TAG_STORE_KEY } from '~/storage/reducer/tag';
 
 /* action type */
-import { FETCH_LIST } from '../../storage/epic/tag';
-import { FILTER_APPEND_TAG } from '../../storage/epic/condition';
+import { FETCH_LIST } from '~/storage/epic/tag';
+import { FILTER_APPEND_TAG } from '~/storage/epic/condition';
 
 /* style */
 import tags from './tags.scss';
