@@ -1,7 +1,7 @@
 import { compose, withStore, withStyle } from '~/core/container/index';
 import { withStateHandlers, withPropsOnChange } from 'recompose';
 import { STORE_KEY as WORK_STORE_KEY } from '~/storage/reducer/work';
-import { slice } from 'ramda';
+import { slice, sort } from 'ramda';
 import list from './list.scss';
 
 export default compose(
@@ -13,12 +13,15 @@ export default compose(
       page: 0
     },
     {
-      setData: ({ rowsPerPage }) => data => ({
-        originData: data,
-        data: slice(0, rowsPerPage, data),
-        rowsPerPage,
-        page: 0
-      }),
+      setData: ({ rowsPerPage }) => {
+        const sortFn = (a, b) => b.stage === a.stage ? b.timeStamp - a.timeStamp : b.stage - a.stage;
+        return data => ({
+          originData: sort(sortFn, data),
+          data: slice(0, rowsPerPage, sort(sortFn, data)),
+          rowsPerPage,
+          page: 0
+        });
+      },
       handleChangePage: ({ originData, rowsPerPage }) => (event, page) => ({
         data: slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage, originData),
         page

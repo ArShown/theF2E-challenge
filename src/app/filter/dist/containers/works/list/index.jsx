@@ -27,7 +27,7 @@ export default handler(({ originData, data, page, rowsPerPage, handleChangePage,
             [ 第 {stage} 週 ]
           </Typography>
           <Typography variant="subheading" gutterBottom>
-            提交時間：{moment(timeStamp).format('YYYY-MM-DD HH:mm:ss')}
+            提交時間：{moment(timeStamp).utc().format('YYYY-MM-DD HH:mm:ss')}
           </Typography>
           <Tag tags={tag}/>
           <br/>
