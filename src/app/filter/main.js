@@ -4,7 +4,7 @@ import router from '~/core/router';
 
 render(
   router({
-    routerIndex: '/index'
+    routerIndex: '/'
   }),
   document.getElementById('container')
 );

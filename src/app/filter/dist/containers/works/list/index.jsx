@@ -5,11 +5,21 @@ import Typography from '@material-ui/core/Typography';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
+import Table from '@material-ui/core/Table';
+import TablePagination from '@material-ui/core/TablePagination';
 import Tag from '../item-tags';
 import { map, addIndex } from 'ramda';
 
-export default handler(({ storeData }) =>
+export default handler(({ originData, data, page, rowsPerPage, handleChangePage, handleChangeRowsPerPage }) =>
   <div>
+    <TablePagination
+      component="div"
+      count={originData.length}
+      rowsPerPage={rowsPerPage}
+      page={page}
+      onChangePage={handleChangePage}
+      onChangeRowsPerPage={handleChangeRowsPerPage}
+    />
     {addIndex(map)(({ url, stage, timeStamp, tag }, idx) =>
       <Card key={`work-${idx}`} styleName="list-item">
         <CardContent>
@@ -24,6 +34,14 @@ export default handler(({ storeData }) =>
           <Button variant="contained" href={url} target="_blank">查看作品</Button>
         </CardContent>
       </Card>
-    )(storeData)}
+    )(data)}
+    <TablePagination
+      component="div"
+      count={originData.length}
+      rowsPerPage={rowsPerPage}
+      page={page}
+      onChangePage={handleChangePage}
+      onChangeRowsPerPage={handleChangeRowsPerPage}
+    />
   </div>
 );
